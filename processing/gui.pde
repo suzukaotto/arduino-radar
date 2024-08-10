@@ -3,7 +3,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 Serial myPort;
 
-String PORT="COM6";
+String PORT="COM3";
 int SERIAL=9600;
 
 String angle="";
