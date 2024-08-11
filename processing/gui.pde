@@ -3,7 +3,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 Serial myPort;
 
-String PORT="COM3";
+String PORT="COM6";
 int SERIAL=9600;
 
 String angle="";
@@ -17,10 +17,17 @@ int index2=0;
 PFont orcFont;
 
 void setup() {
- size (1980, 1080);
- smooth();
- myPort = new Serial(this, PORT, SERIAL);
- myPort.bufferUntil('.');
+  size(1980, 1080);
+  smooth();
+  
+  try {
+    myPort = new Serial(this, PORT, SERIAL);
+    myPort.bufferUntil('.');
+  } catch (Exception e) {
+    print("Error: ");
+    println(e);
+    exit();
+  }
 }
 
 void draw() {
@@ -37,10 +44,12 @@ void draw() {
   drawObject();
   drawText();
 }
+
 void serialEvent (Serial myPort) { // starts reading data from the Serial Port
   // reads the data from the Serial Port up to the character '.' and puts it into the String variable "data".
   data = myPort.readStringUntil('.');
   data = data.substring(0,data.length()-1);
+  println(data);
   
   index1 = data.indexOf(","); // find the character ',' and puts it into the variable "index1"
   angle= data.substring(0, index1); // read the data from position "0" to position of the variable index1 or thats the value of the angle the Arduino Board sent into the Serial Port
@@ -50,6 +59,7 @@ void serialEvent (Serial myPort) { // starts reading data from the Serial Port
   iAngle = int(angle);
   iDistance = int(distance);
 }
+
 void drawRadar() {
   pushMatrix();
   translate(width/2,height-height*0.074); // moves the starting coordinats to new location
@@ -84,6 +94,7 @@ void drawObject() {
   }
   popMatrix();
 }
+
 void drawLine() {
   pushMatrix();
   strokeWeight(9);
@@ -92,9 +103,10 @@ void drawLine() {
   line(0,0,(height-height*0.12)*cos(radians(iAngle)),-(height-height*0.12)*sin(radians(iAngle))); // draws the line according to the angle
   popMatrix();
 }
-void drawText() { // draws the texts on the screen
+
+void drawText() {
   pushMatrix();
-  if(iDistance>40) {
+  if(iDistance > 40) {
     noObject = "Out of Range";
   }
   else {
@@ -111,11 +123,14 @@ void drawText() { // draws the texts on the screen
   text("30cm",width-width*0.177,height-height*0.0833);
   text("40cm",width-width*0.0729,height-height*0.0833);
   textSize(40);
-  text("Robu.in", width-width*0.875, height-height*0.0277);
+  //text("Robu.in", width-width*0.875, height-height*0.0277);
   text("Angle: " + iAngle +" °", width-width*0.48, height-height*0.0277);
   text("Distance: ", width-width*0.26, height-height*0.0277);
   if(iDistance<40) {
     text("           " + iDistance +" cm", width-width*0.225, height-height*0.0277);
+  }
+  else {
+    text("Not found", width-width*0.180, height-height*0.0277);
   }
   textSize(25);
   fill(98,245,60);

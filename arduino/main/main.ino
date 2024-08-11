@@ -1,9 +1,9 @@
 #include <Servo.h>
 
 #define DELAY_TIME 20
-#define SERVO_PIN 8
-#define ECHO_PIN 9
-#define TRIG_PIN 10
+#define SERVO_PIN 2
+#define ECHO_PIN 3
+#define TRIG_PIN 4
 
 Servo myServo;
 
@@ -32,9 +32,11 @@ void printStatus(int dist, int angl) {
 void setup() {
   Serial.begin(9600);
   myServo.attach(SERVO_PIN);
-  myServo.write(0);
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+
+  myServo.write(90);
+  delay(200);
 }
 
 void loop() {
